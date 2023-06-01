@@ -1,0 +1,8 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+  <h1>Информация о пользователе</h1>
+  <p>Имя пользователя: {{ user.username }},{{ user.profile.full_name }}</p>
+  
+  <!-- Добавьте дополнительную информацию о пользователе по мере необходимости -->
+{% endblock %}
