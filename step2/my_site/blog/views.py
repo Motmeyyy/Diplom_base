@@ -28,6 +28,14 @@ def about(request):
         return render(request, 'blog/about.html', {'title': 'О клубе Python Bytes'})
     else: return render(request, 'blog/home.html')
 
+def my_health(request):
+    return render(request, 'blog/my_health.html')
+
+def my_appointments(request):
+    return render(request, 'blog/my_appointments.html')
+
+def make_appointment(request):
+    return render(request, 'blog/make_appointment.html')
 
 
 def verify(request):

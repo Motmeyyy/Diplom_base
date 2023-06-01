@@ -35,12 +35,15 @@
 
               {% if user.is_authenticated %}
                 {% if user|has_group:'Пациент' %}
-                <a class="nav-item nav-link" href="{% url 'blog-about' %}">Мое здоровье</a>          
+                <a class="nav-item nav-link" href="{% url 'my-health' %}">Мое здоровье</a>
+                <a class="nav-item nav-link" href="{% url 'my-appointments' %}">Мои записи</a>
+                <a class="nav-item nav-link" href="{% url 'make-appointment' %}">Записаться на прием к врачу</a>
                 {% endif %}
                 
                 {% if user|has_group:'Мед.персонал' %}
                 {% if user.verificationrequest.is_verified %}
-                <a class="nav-item nav-link" href="{% url 'med-list' %}">Медицинский персонал</a>
+                <a class="nav-item nav-link" href="{% url 'blog-about' %}">Записи ко мне</a>
+                <a class="nav-item nav-link" href="{% url 'med-list' %}">База пациентов</a>
                 {% endif %}
                 {% if not user.verificationrequest.is_verified %}
                 <a class="nav-item nav-link" href="{% url 'verify' %}">Подтвердить статус персонала</a>
