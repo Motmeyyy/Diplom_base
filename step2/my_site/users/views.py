@@ -29,23 +29,21 @@ def register(request):
 
 @login_required
 def profile(request):
-    user = request.user
+    return render(request, 'users/profile.html')
+
+@login_required
+def edit_profile(request):
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=user)
-        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Ваш профиль был успешно обновлен!')
             return redirect('profile')
     else:
-        user_form = UserUpdateForm(instance=user)
-        profile_form = ProfileUpdateForm(instance=user.profile)
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form
-    }
-    return render(request, 'users/profile.html', context)
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+    return render(request, 'users/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
 @login_required
 def view_appointments(request):
@@ -69,3 +67,4 @@ def create_appointment(request):
 def doctor_appointments(request):
     appointments = Appointment.objects.filter(doctor=request.user)
     return render(request, 'users/appointments/doctor_appointments.html', {'appointments': appointments})
+

@@ -10,6 +10,8 @@ urlpatterns = [
     path('med/<int:user_id>/', views.user_detail, name='user-detail'),
     path('verify/', verify, name='verify'),
     path('my_health/', views.my_health, name='my-health'),
-    # path('my_appointments/', user_views.view_appointments, name='view_appointments'),
-    # path('make_appointment/', user_views.create_appointment, name='create_appointment'),
+
+    path('my_appointments/', user_views.view_appointments, name='view_appointments'),
+    path('make_appointment/', user_views.create_appointment, name='create_appointment'),
+
 ]
