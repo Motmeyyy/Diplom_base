@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from .forms import UserRegisterForm
 from .forms import UserUpdateForm, ProfileUpdateForm
+from .models import Appointment
+from .forms import AppointmentForm
 
 def register(request):
     if request.method == 'POST':
@@ -45,3 +47,20 @@ def profile(request):
     }
     return render(request, 'users/profile.html', context)
 
+@login_required
+def view_appointments(request):
+    appointments = Appointment.objects.filter(doctor=request.user)
+    return render(request, 'users/appointments/view.html', {'appointments': appointments})
+
+@login_required
+def create_appointment(request):
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.patient = request.user
+            appointment.save()
+            return redirect('view_appointments')
+    else:
+        form = AppointmentForm()
+    return render(request, 'users/appointments/create.html', {'form': form})

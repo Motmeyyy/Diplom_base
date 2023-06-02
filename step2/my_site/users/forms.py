@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 from django.contrib.auth.forms import UserChangeForm
-
+from .models import Appointment
 
 
 
@@ -28,3 +28,8 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['full_name','image']
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['doctor', 'date', 'description']

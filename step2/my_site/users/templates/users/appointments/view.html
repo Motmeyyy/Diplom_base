@@ -1,0 +1,14 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+  <h2>My Appointments</h2>
+  {% if appointments %}
+    <ul>
+      {% for appointment in appointments %}
+        <li>{{ appointment }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No appointments found.</p>
+  {% endif %}
+{% endblock %}

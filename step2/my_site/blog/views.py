@@ -32,10 +32,10 @@ def my_health(request):
     return render(request, 'blog/my_health.html')
 
 def my_appointments(request):
-    return render(request, 'blog/my_appointments.html')
+    return render(request, 'users/appointments/view.html')
 
 def make_appointment(request):
-    return render(request, 'blog/make_appointment.html')
+    return render(request, 'users/appointments/create.html')
 
 
 def verify(request):
