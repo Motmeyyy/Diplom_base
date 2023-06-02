@@ -28,6 +28,10 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('med/', views.med_list, name='user-list'),
     path('', include('blog.urls')),
+    path('my_health/', views.my_health, name='my-health'),
+    path('my_appointments/', user_views.view_appointments, name='view_appointments'),
+    path('make_appointment/', user_views.create_appointment, name='create_appointment'),
+    path('doctor_appointments/', user_views.doctor_appointments, name='doctor_appointments'),
 ]
 
 
