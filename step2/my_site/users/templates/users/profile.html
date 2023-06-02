@@ -1,6 +1,7 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+
     <div class="content-section">
       <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -9,11 +10,23 @@
 
         </div>
       </div>
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ user_form.as_p }}
-  {{ profile_form.as_p }}
-  <button type="submit">Сохранить изменения</button>
-</form>
+ <div class="row">
+    <div class="col-md-6">
+        <h2>Информация о пользователе</h2>
+        <p>Логин: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Полное имя: {{ user.profile.full_name }}</p>
+        <p>Полис: {{ user.profile.polis }}</p>
+        <p>Номер телефона: {{ user.profile.phone_number }}</p>
+        <p>Дата рождения: {{ user.profile.date_of_birth }}</p>
+        <p>Адрес: {{ user.profile.address}}</p>
+        <p>ЧСС: {{ user.profile.heart_rate }}</p>
+        <p>Диета: {{ user.profile.diet }}</p>
+        <p>История болезней: {{ user.profile.medical_history }}</p>
+        {% if request.user == user %}
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Редактировать профиль</a>
+        {% endif %}
+    </div>
+</div>
     </div>
 {% endblock content %}
