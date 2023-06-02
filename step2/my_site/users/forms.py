@@ -30,6 +30,10 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['full_name','image']
 
 class AppointmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.fields['doctor'].queryset = User.objects.filter(groups__name='Мед.персонал')
+
     class Meta:
         model = Appointment
         fields = ['doctor', 'date', 'description']

@@ -49,7 +49,7 @@ def profile(request):
 
 @login_required
 def view_appointments(request):
-    appointments = Appointment.objects.filter(doctor=request.user)
+    appointments = Appointment.objects.filter(patient=request.user)
     return render(request, 'users/appointments/view.html', {'appointments': appointments})
 
 @login_required
