@@ -33,6 +33,9 @@ class AppointmentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
         self.fields['doctor'].queryset = User.objects.filter(groups__name='Мед.персонал')
+        label = 'Врач',
+        empty_label = None,
+        widget = forms.Select(attrs={'class': 'form-control'})
 
     class Meta:
         model = Appointment

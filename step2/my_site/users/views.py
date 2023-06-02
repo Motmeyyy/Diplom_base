@@ -64,3 +64,8 @@ def create_appointment(request):
     else:
         form = AppointmentForm()
     return render(request, 'users/appointments/create.html', {'form': form})
+
+@login_required
+def doctor_appointments(request):
+    appointments = Appointment.objects.filter(doctor=request.user)
+    return render(request, 'users/appointments/doctor_appointments.html', {'appointments': appointments})

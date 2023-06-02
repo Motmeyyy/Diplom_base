@@ -42,7 +42,7 @@
                 
                 {% if user|has_group:'Мед.персонал' %}
                 {% if user.verificationrequest.is_verified %}
-                <a class="nav-item nav-link" href="{% url 'blog-about' %}">Записи ко мне</a>
+                <a class="nav-item nav-link" href="{% url 'doctor_appointments' %}">Записи ко мне</a>
                 <a class="nav-item nav-link" href="{% url 'med-list' %}">База пациентов</a>
                 {% endif %}
                 {% if not user.verificationrequest.is_verified %}

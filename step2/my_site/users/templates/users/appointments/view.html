@@ -1,14 +1,15 @@
 {% extends "blog/base.html" %}
 
+
 {% block content %}
-  <h2>My Appointments</h2>
+  <h1>Мои записи</h1>
   {% if appointments %}
     <ul>
       {% for appointment in appointments %}
-        <li>{{ appointment }}</li>
+        <li>{{ appointment.patient.profile.full_name }} - {{ appointment.date }} - {{ appointment.description }}</li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>No appointments found.</p>
+    <p>У вас нет записей.</p>
   {% endif %}
 {% endblock %}

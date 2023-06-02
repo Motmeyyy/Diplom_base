@@ -1,0 +1,14 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h1>Записи (мед.персонал)</h1>
+  {% if appointments %}
+    <ul>
+      {% for appointment in appointments %}
+        <li>{{ appointment.doctor.profile.full_name }} - {{ appointment.date }} - {{ appointment.description }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>К вам пока никто не записался.</p>
+  {% endif %}
+{% endblock %}
