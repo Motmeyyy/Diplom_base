@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 from django.contrib.auth.forms import UserChangeForm
-
+from .models import Appointment
 
 
 
@@ -28,3 +28,16 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['full_name', 'image', 'polis', 'phone_number', 'heart_rate', 'diet', 'date_of_birth', 'address', 'medical_history']
+
+class AppointmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.fields['doctor'].queryset = User.objects.filter(groups__name='Мед.персонал')
+        label = 'Врач',
+        empty_label = None,
+        widget = forms.Select(attrs={'class': 'form-control'})
+
+    class Meta:
+        model = Appointment
+        fields = ['doctor', 'date', 'description']
+

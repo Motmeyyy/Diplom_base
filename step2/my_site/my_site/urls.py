@@ -29,6 +29,10 @@ urlpatterns = [
     path('med/', views.med_list, name='user-list'),
     path('profile/edit/', user_views.edit_profile, name='edit_profile'),
     path('', include('blog.urls')),
+    path('my_health/', views.my_health, name='my-health'),
+    path('my_appointments/', user_views.view_appointments, name='view_appointments'),
+    path('make_appointment/', user_views.create_appointment, name='create_appointment'),
+    path('doctor_appointments/', user_views.doctor_appointments, name='doctor_appointments'),
 ]
 
 

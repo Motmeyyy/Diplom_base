@@ -1,0 +1,35 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Записаться к врачу</h2>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="{{ form.doctor.id_for_label }}">Врач</label>
+                <select name="{{ form.doctor.html_name }}" id="{{ form.doctor.id_for_label }}" class="form-control">
+                  {% for doctor in form.doctor.field.queryset %}
+                    <option value="{{ doctor.pk }}">{{ doctor.profile.full_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="{{ form.date.id_for_label }}">Дата</label>
+                <input type="date" class="form-control" id="{{ form.date.id_for_label }}" name="{{ form.date.html_name }}">
+              </div>
+              <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Симптомы</label>
+                <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.html_name }}" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Записаться</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
