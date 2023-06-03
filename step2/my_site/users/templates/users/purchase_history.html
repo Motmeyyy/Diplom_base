@@ -1,0 +1,9 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <h1>Purchase History</h1>
+    <ul>
+        {% for item in history %}
+            <li>{{ item.name }} - {{ item.price }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

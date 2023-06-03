@@ -33,6 +33,7 @@ urlpatterns = [
     path('my_appointments/', user_views.view_appointments, name='view_appointments'),
     path('make_appointment/', user_views.create_appointment, name='create_appointment'),
     path('doctor_appointments/', user_views.doctor_appointments, name='doctor_appointments'),
+    path('purchase-history/', user_views.purchase_history, name='purchase_history'),
 ]
 
 
