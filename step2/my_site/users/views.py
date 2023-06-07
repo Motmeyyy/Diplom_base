@@ -83,20 +83,20 @@ def clean(text):
 def obtain_header(msg):
     subject, encoding = decode_header(msg["Subject"])[0]
     if isinstance(subject, bytes):
-        subject = subject.decode(encoding)
+        subject = subject.decode('utf-8')
     From, encoding = decode_header(msg.get("From"))[0]
     if isinstance(From, bytes):
-        From = From.decode(encoding)
+        From = From.decode('utf-8')
     return subject, From
 
-def download_attachment(part):
-    filename = part.get_filename()
-    if filename:
-        folder_name = clean(subject)
-        if not os.path.isdir(folder_name):
-            os.mkdir(folder_name)
-        filepath = os.path.join(folder_name, filename)
-        open(filepath, "wb").write(part.get_payload(decode=True))
+# def download_attachment(part):
+#     filename = part.get_filename()
+#     if filename:
+#         folder_name = clean(subject)
+#         if not os.path.isdir(folder_name):
+#             os.mkdir(folder_name)
+#         filepath = os.path.join(folder_name, filename)
+#         open(filepath, "wb").write(part.get_payload(decode=True))
 
 def extract_purchase_history():
     imap = imaplib.IMAP4_SSL("imap.mail.ru")
@@ -128,28 +128,48 @@ def extract_purchase_history():
                             if content_type == "text/plain" and "attachment" not in content_disposition:
                                 start_idx = body.find("приход") + len("приход")
                                 end_idx = body.rfind("Итог", start_idx)
-                                pattern = re.compile(r'(\d+)\s+(.+?)\s+Цена\*Кол\s+(\d+\.\d+)')
+                                pattern = re.compile(r'(\d+)\s+(.*?)\s+Цена\*Кол\s+(\d+\.\d+)')
                                 products = []
+
                                 for match in pattern.finditer(body[start_idx:end_idx].strip()):
                                     id = match.group(1)
                                     name = match.group(2)
                                     price = float(match.group(3))
                                     product = {'id': id, 'name': name, 'price': price}
                                     products.append(product)
-                                history.extend(products)
-                            elif "attachment" in content_disposition:
-                                download_attachment(part)
-                    else:
-                        content_type = msg.get_content_type()
-                        body = msg.get_payload(decode=True).decode()
-                        if content_type == "text/plain":
-                            start_idx = body.find("приход") + len("приход")
-                            end_idx = body.rfind("Наличные", start_idx)
-                            product = {'id': '1', 'name': 'ДОБР.Нап.КОЛА б/алк.ПЭТ 1.5л', 'price': 100.0}
-                            history.append(product)
+                                df = pd.DataFrame(columns=['name'])
+
+                                for product in products:
+                                    new_row = {'name': [product['name']]}
+                                    new_rows_df = pd.DataFrame(new_row)
+                                    df = pd.concat([df, new_rows_df], ignore_index=True)
+                                rb = RuleBased()
+
+                                history.append(rb.parse(df))
+                                print(history)
+
+
     imap.close()
     return history
 
+
+
+
 def purchase_history(request):
+    # Ваш код для получения истории покупок
     history = extract_purchase_history()
-    return render(request, 'users/purchase_history.html', {'history': history})
+
+    # Создаем пустой список для обработанных данных
+    processed_history = []
+
+    for i, item in enumerate(history):
+        processed_item = {
+            'id': i + 1,  # Используем индекс элемента для получения позиции в списке
+            'name': item['name'] if 'name' in item else '',
+            'product_norm': item['product_norm'] if 'product_norm' in item else '',
+            'brand_norm': item['brand_norm'] if 'brand_norm' in item else '',
+            'cat_norm': item['cat_norm'] if 'cat_norm' in item else ''
+        }
+        processed_history.append(processed_item)
+
+    return render(request, 'users/purchase_history.html', {'history': processed_history})

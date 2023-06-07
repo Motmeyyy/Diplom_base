@@ -1,9 +1,26 @@
 {% extends "blog/base.html" %}
 {% block content %}
     <h1>Purchase History</h1>
-    <ul>
-        {% for item in history %}
-            <li>{{ item.name }} - {{ item.price }}</li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Product Norm</th>
+                <th>Brand Norm</th>
+                <th>Category Norm</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in history %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.product_norm }}</td>
+                    <td>{{ item.brand_norm }}</td>
+                    <td>{{ item.cat_norm }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}
