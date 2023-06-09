@@ -1,26 +1,38 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    <h1>Purchase History</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Product Norm</th>
-                <th>Brand Norm</th>
-                <th>Category Norm</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in history %}
-                <tr>
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.product_norm }}</td>
-                    <td>{{ item.brand_norm }}</td>
-                    <td>{{ item.cat_norm }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!--    <h1>Purchase History</h1>-->
+<!--    <table>-->
+<!--        <thead>-->
+<!--            <tr>-->
+<!--                <th>ID</th>-->
+<!--                <th>Name</th>-->
+<!--                <th>Product Norm</th>-->
+<!--                <th>Brand Norm</th>-->
+<!--                <th>Category Norm</th>-->
+<!--            </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--            {% for item in history %}-->
+<!--                <tr>-->
+<!--                    <td>{{ item.id }}</td>-->
+<!--                    <td>{{ item.name }}</td>-->
+<!--                    <td>{{ item.product_norm }}</td>-->
+<!--                    <td>{{ item.brand_norm }}</td>-->
+<!--                    <td>{{ item.cat_norm }}</td>-->
+<!--                </tr>-->
+<!--            {% endfor %}-->
+<!--        </tbody>-->
+<!--    </table>-->
+
+{% if request.user.is_authenticated %}
+    {% for purchase in purchase_history %}
+        <!-- Отобразите информацию о покупке, например, purchase.date, purchase.item и т.д. -->
+    <tr>
+        {{purchase.name}}
+        {{purchase.product_norm}}
+    </tr>
+    {% endfor %}
+{% else %}
+    <p>Пожалуйста, войдите в систему, чтобы просмотреть историю покупок.</p>
+{% endif %}
 {% endblock content %}
