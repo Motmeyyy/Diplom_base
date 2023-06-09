@@ -13,6 +13,8 @@ class Profile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
+    email_key = models.CharField(max_length=255, default= 'Nz2cNLSLUb3UhKf6eQvb')
+    email_sender = models.CharField(max_length=255, default='ivankov2001@gmail.com')
     def __str__(self):
         return f'{self.user.username} Profile'
 
