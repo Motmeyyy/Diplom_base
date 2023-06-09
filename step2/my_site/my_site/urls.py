@@ -1,18 +1,3 @@
-"""my_site URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
@@ -34,6 +19,10 @@ urlpatterns = [
     path('make_appointment/', user_views.create_appointment, name='create_appointment'),
     path('doctor_appointments/', user_views.doctor_appointments, name='doctor_appointments'),
     path('purchase-history/', user_views.purchase_history, name='purchase_history'),
+    path('diets/', user_views.diet_list, name='diet_list'),
+    path('diets/<int:diet_id>/', user_views.diet_detail, name='diet_detail'),
+    path('diets/<int:diet_id>/choose/', user_views.choose_diet, name='choose_diet'),
+    path('create_diet/', user_views.create_diet, name='create_diet'),
 ]
 
 
