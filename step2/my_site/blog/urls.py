@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from .views import verify
 from users import views as user_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', views.home, name='blog-home'),
@@ -14,4 +16,4 @@ urlpatterns = [
     path('my_appointments/', user_views.view_appointments, name='view_appointments'),
     path('make_appointment/', user_views.create_appointment, name='create_appointment'),
 
-]
+]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

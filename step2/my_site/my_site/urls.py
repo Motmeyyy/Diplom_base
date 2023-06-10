@@ -20,11 +20,15 @@ urlpatterns = [
     path('doctor_appointments/', user_views.doctor_appointments, name='doctor_appointments'),
     path('purchase-history/', user_views.purchase_history, name='purchase_history'),
     path('diets/', user_views.diet_list, name='diet_list'),
+    path('recipes/', user_views.recipe_list, name='recipe_list'),
     path('diets/<int:diet_id>/', user_views.diet_detail, name='diet_detail'),
     path('diets/<int:diet_id>/choose/', user_views.choose_diet, name='choose_diet'),
+    path('diets_main/', user_views.diets_main, name='diets_main'),
     path('create_diet/', user_views.create_diet, name='create_diet'),
+    path('create_recipe/', user_views.create_recipe, name='create_recipe'),
 ]
 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
