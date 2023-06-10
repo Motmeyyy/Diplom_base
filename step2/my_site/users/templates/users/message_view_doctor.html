@@ -1,0 +1,77 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/chat.css' %}">
+
+   <div class="new-message-container">
+        <h2>Написать новое сообщение</h2>
+        <form method="post" action="{% url 'message_view_doctor' %}">
+            {% csrf_token %}
+            <label for="patient">Выберите пациента:</label>
+            <select name="patient" id="patient" class="select2">
+                <option value=""></option>
+                {% for patient in all_patients %}
+                    <option value="{{ patient.id }}">{{ patient.profile.full_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <textarea name="message" placeholder="Напишите сообщение..."></textarea>
+            <br>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <h2>Чаты с пациентами</h2>
+        {% for chat in chats %}
+            <div class="chat">
+                <h3>Пациент: {{ chat.patient.profile.full_name }}</h3>
+                <div class="message-container">
+                    {% for message in chat.messages reversed %}
+                        {% if message.sender == request.user %}
+                            <div class="message sent">
+                                <p class="sender">Вы</p>
+                                <p class="timestamp">{{ message.timestamp }}</p>
+                                <p class="text">{{ message.text }}</p>
+                            </div>
+                        {% else %}
+                            <div class="message received">
+                                <p class="sender">{{ message.sender.profile.full_name }}</p>
+                                <p class="timestamp">{{ message.timestamp }}</p>
+                                <p class="text">{{ message.text }}</p>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <p>Нет сообщений</p>
+                    {% endfor %}
+                </div>
+                <form method="post" action="{% url 'message_send' recipient_id=chat.patient.id %}">
+                    {% csrf_token %}
+                    <textarea name="message" placeholder="Напишите сообщение..."></textarea>
+                    <input type="hidden" name="recipient_id" value="{{ chat.patient.id }}">
+                    <button type="submit">Отправить</button>
+                </form>
+<form method="post" action="{% url 'chat_delete' recipient_id=chat.patient.id %}">
+    {% csrf_token %}
+    <button type="submit">Удалить чат</button>
+</form>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
+<script>
+    // Получаем элемент контейнера чата
+    var chatContainer = document.querySelector('.message-container');
+
+    // Прокручиваем чат вниз
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+</script>
+
+{% endblock content %}

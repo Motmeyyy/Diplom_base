@@ -20,13 +20,16 @@
         <p>Номер телефона: {{ user.profile.phone_number }}</p>
         <p>Дата рождения: {{ user.profile.date_of_birth }}</p>
         <p>Адрес: {{ user.profile.address}}</p>
-        <p>ЧСС: {{ user.profile.heart_rate }}</p>
+
+        <p id="heart-rate">ЧСС: {{ user.profile.heart_rate }}</p>
+
         <h3>Диета</h3>
         {% if user.profile.diet %}
           <p>Выбранная диета: {{ user.profile.diet.name }}</p>
         {% else %}
           <p>Диета не выбрана</p>
         {% endif %}
+
         <p>История болезней: {{ user.profile.medical_history }}</p>
         {% if request.user == user %}
         <div class="btn-group" role="group">
@@ -42,4 +45,22 @@
     </div>
 </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Функция для отправки асинхронного запроса на сервер и обновления значения пульса на странице
+    function updateHeartRate() {
+        // Отправка асинхронного GET-запроса на сервер
+        fetch("{% url 'heart_rate_api' %}")
+            .then(response => response.json())
+            .then(data => {
+                // Обновление значения пульса на странице
+                document.getElementById("heart-rate").textContent = "ЧСС: " + data.heart_rate;
+            })
+            .catch(error => console.log(error));
+    }
+
+    // Вызов функции обновления значения пульса каждые 4 секунды
+    setInterval(updateHeartRate, 4000);
+</script>
+
 {% endblock content %}

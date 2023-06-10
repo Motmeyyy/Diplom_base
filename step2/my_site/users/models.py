@@ -1,14 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    text = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     full_name = models.CharField(max_length=255, default='FIO')
     polis = models.CharField(max_length=20, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    heart_rate = models.IntegerField(blank=True, null=True)
+    heart_rate = models.IntegerField(null=True)
     diet = models.ForeignKey('Diet', on_delete=models.SET_NULL, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -35,6 +39,10 @@ class Appointment(models.Model):
     def __str__(self):
         return f"Appointment for {self.patient.username} with {self.doctor.username} at {self.date}"
 
+
+class HeartRate(models.Model):
+        rate = models.IntegerField()
+        timestamp = models.DateTimeField(auto_now_add=True)
 
 class PurchaseHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

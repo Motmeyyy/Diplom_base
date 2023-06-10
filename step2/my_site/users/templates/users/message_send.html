@@ -1,0 +1,7 @@
+<h1>Отправить сообщение пользователю: {{ recipient.username }}</h1>
+<<form method="post" action="{% url 'message_send' recipient_id=recipient.id %}">
+    {% csrf_token %}
+    <textarea name="message"></textarea>
+    <input type="hidden" name="recipient_id" value="{{ recipient.id }}">
+    <button type="submit">Отправить</button>
+</form>

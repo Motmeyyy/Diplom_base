@@ -1,0 +1,3 @@
+{% for doctor in doctors %}
+    <a href="{% url 'message_send' recipient_id=doctor.id %}">{{ doctor.username }}</a>
+{% endfor %}
