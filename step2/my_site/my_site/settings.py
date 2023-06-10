@@ -130,13 +130,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+
 logging.basicConfig(level=logging.DEBUG)
+
+
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'staticfiles',
+    BASE_DIR / 'staticfiles',
+]
+STATIC_ROOT = BASE_DIR / 'static'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CORS_ORIGIN_ALLOW_ALL = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'blog-home'

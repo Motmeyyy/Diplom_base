@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container">
+    <h2>Create Recipe</h2>
+    <form method="POST" id="recipeForm">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-primary">Create Recipe</button>
+    </form>
+  </div>
+{% endblock %}

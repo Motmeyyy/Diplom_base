@@ -1,9 +1,27 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    <h1>Purchase History</h1>
-    <ul>
-        {% for item in history %}
-            <li>{{ item.name }} - {{ item.price }}</li>
-        {% endfor %}
-    </ul>
+
+{% if request.user.is_authenticated %}
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Нормализованный продукт</th>
+                <th>Категория</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.product_norm }}</td>
+                    <td>{{ product.cat_norm }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Пожалуйста, войдите в систему, чтобы просмотреть историю покупок.</p>
+{% endif %}
+
 {% endblock content %}

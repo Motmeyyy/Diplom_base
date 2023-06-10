@@ -1,9 +1,18 @@
+
 from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
+
+import hashlib
+import re
+
+from django.db import transaction
+from django.shortcuts import render, redirect, get_object_or_404
+
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -26,6 +35,10 @@ from django.http import JsonResponse
 
 from .forms import AppointmentForm
 from django.shortcuts import render, get_object_or_404
+
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, AppointmentForm, DietForm, RecipeForm
+from .models import Appointment, PurchaseHistory, Diet, Recipe, Product
+
 import imaplib
 import email
 from django.views.decorators.csrf import csrf_exempt
@@ -36,6 +49,7 @@ import os
 import webbrowser
 from receipt_parser import RuleBased
 import pandas as pd
+
 import re
 from .models import Message
 from django.template.loader import render_to_string
@@ -47,6 +61,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
+
+
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -116,29 +133,23 @@ def clean(text):
 def obtain_header(msg):
     subject, encoding = decode_header(msg["Subject"])[0]
     if isinstance(subject, bytes):
-        subject = subject.decode(encoding)
+        subject = subject.decode('utf-8')
     From, encoding = decode_header(msg.get("From"))[0]
     if isinstance(From, bytes):
-        From = From.decode(encoding)
+        From = From.decode('utf-8')
     return subject, From
 
 
-def download_attachment(part):
-    filename = part.get_filename()
-    if filename:
-        folder_name = clean(subject)
-        if not os.path.isdir(folder_name):
-            os.mkdir(folder_name)
-        filepath = os.path.join(folder_name, filename)
-        open(filepath, "wb").write(part.get_payload(decode=True))
 
 
-def extract_purchase_history():
+
+@transaction.atomic
+def extract_purchase_history(user):
+    profile = user.profile
     imap = imaplib.IMAP4_SSL("imap.mail.ru")
-    imap.login("ivankov2001@bk.ru", "Nz2cNLSLUb3UhKf6eQvb")
+    imap.login(user.email, profile.email_key)
     status, messages = imap.select("INBOX")
     numOfMessages = int(messages[0])
-    history = []
 
     for i in range(numOfMessages, numOfMessages - 10, -1):
         res, msg = imap.fetch(str(i), "(RFC822)")
@@ -147,7 +158,8 @@ def extract_purchase_history():
             if isinstance(response, tuple):
                 msg = email.message_from_bytes(response[1])
                 name, address = email.utils.parseaddr(msg['From'])
-                if (address.find("ivankov2001@gmail.com") != -1):
+                if address.find(profile.email_sender) != -1:
+
                     subject, From = obtain_header(msg)
 
                     if msg.is_multipart():
@@ -163,27 +175,50 @@ def extract_purchase_history():
                             if content_type == "text/plain" and "attachment" not in content_disposition:
                                 start_idx = body.find("приход") + len("приход")
                                 end_idx = body.rfind("Итог", start_idx)
-                                pattern = re.compile(r'(\d+)\s+(.+?)\s+Цена\*Кол\s+(\d+\.\d+)')
+                                pattern = re.compile(r'(\d+)\s+(.*?)\s+Цена\*Кол\s+(\d+\.\d+)')
                                 products = []
+
                                 for match in pattern.finditer(body[start_idx:end_idx].strip()):
                                     id = match.group(1)
                                     name = match.group(2)
                                     price = float(match.group(3))
                                     product = {'id': id, 'name': name, 'price': price}
                                     products.append(product)
-                                history.extend(products)
-                            elif "attachment" in content_disposition:
-                                download_attachment(part)
-                    else:
-                        content_type = msg.get_content_type()
-                        body = msg.get_payload(decode=True).decode()
-                        if content_type == "text/plain":
-                            start_idx = body.find("приход") + len("приход")
-                            end_idx = body.rfind("Наличные", start_idx)
-                            product = {'id': '1', 'name': 'ДОБР.Нап.КОЛА б/алк.ПЭТ 1.5л', 'price': 100.0}
-                            history.append(product)
+                                df = pd.DataFrame(columns=['name'])
+                                for product in products:
+                                    new_row = {'name': [product['name']]}
+                                    new_rows_df = pd.DataFrame(new_row)
+                                    df = pd.concat([df, new_rows_df], ignore_index=True)
+
+                                rb = RuleBased()
+                                parsed_df = rb.parse(df)
+                                created_products = []
+                                for index, row in parsed_df.iterrows():
+                                    product_name = row['name']
+                                    product_normalize = row['product_norm'] if pd.notnull(row['product_norm']) else None
+                                    brand_normalize = row['brand_norm'] if pd.notnull(row['brand_norm']) else None
+                                    cat_normalize = row['cat_norm'] if pd.notnull(row['cat_norm']) else None
+                                    user_order = user
+                                    product, created = Product.objects.get_or_create(
+                                        name=product_name,
+                                        product_norm=product_normalize,
+                                        brand_norm = brand_normalize,
+                                        cat_norm = cat_normalize,
+                                        user = user_order
+                                    )
+                                    if created:
+                                        # product.user = user
+                                        product.save()
+                                        print("Product User:", product.user)
+                                        created_products.append(product)
+                                    else:
+                                        print("individual product creation is failed")
+
+
+
+
+
     imap.close()
-    return history
 
 
 def purchase_history(request):
@@ -342,4 +377,106 @@ class HeartRateView(View):
         return JsonResponse({'heart_rate': profile.heart_rate})
 
 
+
+
+
+
+
+
+@login_required
+def purchase_history(request):
+    user = request.user
+    print(request.user)
+    extract_purchase_history(user)
+    products = Product.objects.filter(user=user)
+    print(products)
+    context = {'products': products}
+    return render(request, 'users/purchase_history.html', context)
+
+@login_required
+def diets_main(request):
+    diets = Diet.objects.all()
+    recipes = Recipe.objects.all()
+    if request.method == 'POST':
+        form = DietForm(request.POST)
+        if form.is_valid():
+            diet = form.save()
+            return redirect('diet_list')
+    else:
+        form = DietForm()
+    return render(request, 'users/diets_main.html', {'form': form, 'diets': diets, 'recipes':recipes})
+
+@login_required
+def choose_diet(request, diet_id):
+    # user = request.user
+    # extract_purchase_history(user)
+    diet = get_object_or_404(Diet, id=diet_id)
+    # recipes = diet.recipes.filter(user=request.user)
+    # products = Product.objects.filter(user=request.user)
+    return render(request, 'users/choose_diet.html', {'diet': diet})
+
+
+def diet_list(request):
+    diets = Diet.objects.all()
+    return render(request, 'users/diet_list.html', {'diets': diets})
+
+def recipe_list(request):
+    recipes = Recipe.objects.all()
+    return render(request, 'users/recipe_list.html', {'recipes': recipes})
+
+
+@login_required
+def diet_detail(request, diet_id):
+    diet = Diet.objects.get(id=diet_id)
+    return render(request, 'users/diet_detail.html', {'diet': diet})
+
+@login_required
+def create_diet(request):
+    diets = Diet.objects.all()
+    if request.method == 'POST':
+        form = DietForm(request.POST)
+        if form.is_valid():
+            diet = form.save()
+            return redirect('diet_list')
+    else:
+        form = DietForm()
+    return render(request, 'users/diet_form.html', {'form': form, 'diets': diets})
+
+def edit_diet(request, diet_id):
+    diet = get_object_or_404(Recipe, pk=diet_id)
+    if request.method == 'POST':
+        form = DietForm(request.POST, instance=diet)
+        if form.is_valid():
+            form.save()
+            return redirect('diet_detail', diet_id=diet_id)
+    else:
+        form = DietForm(instance=diet)
+    return render(request, 'users/edit_diet.html', {'form': form, 'diet': diet})
+
+@login_required
+def create_recipe(request):
+    recipes = Recipe.objects.all()
+    if request.method == 'POST':
+        form = RecipeForm(request.POST)
+        if form.is_valid():
+            recipe = form.save()
+            return redirect('recipe_list')
+    else:
+        form = RecipeForm()
+    return render(request, 'users/recipe_form.html', {'form': form, 'recipes': recipes})
+
+def edit_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, instance=recipe)
+        if form.is_valid():
+            form.save()
+            return redirect('recipe_detail', recipe_id=recipe_id)
+    else:
+        form = RecipeForm(instance=recipe)
+    return render(request, 'users/edit_recipe.html', {'form': form, 'recipe': recipe})
+
+def recipe_detail(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    return render(request, 'users/recipe_detail.html', {'recipe': recipe})
 

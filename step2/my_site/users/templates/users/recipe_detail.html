@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h2>{{ recipe.name }}</h2>
+  <p>{{ recipe.description }}</p>
+  {% for ingredient in recipe.ingredients.all %}
+    <p>{{ ingredient.product_norm }}</p>
+  {% empty %}
+    <p>Нет тегов</p>
+{% endfor %}
+  <!-- Добавьте другую информацию о рецепте по вашему усмотрению -->
+{% endblock %}

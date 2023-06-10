@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h2>Выберите диету</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <select name="diet" id="diet">
+      {% for diet in diets %}
+        <option value="{{ diet.id }}">{{ diet.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Выбрать</button>
+  </form>
+
+  <ul>
+    {% for product in products %}
+      <li>{{ product.name }} - {{ product.product_norm }} - {{ product.cat_norm }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

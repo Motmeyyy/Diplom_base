@@ -1,18 +1,3 @@
-"""my_site URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
@@ -49,9 +34,22 @@ urlpatterns = [
     path('chat/delete/<int:recipient_id>/', user_views.chat_delete, name='chat_delete'),
     path('api/get_heart_rate/', HeartRateView.as_view(), name='get_heart_rate'),
     path('api/get_csrf_token/', user_views.get_csrf_token, name='get_csrf_token'),
+
+    path('diets/', user_views.diet_list, name='diet_list'),
+    path('recipes/', user_views.recipe_list, name='recipe_list'),
+    path('diets/<int:diet_id>/choose/', user_views.choose_diet, name='choose_diet'),
+    path('diets_main/', user_views.diets_main, name='diets_main'),
+    path('create_diet/', user_views.create_diet, name='create_diet'),
+    path('diets_main/<int:diet_id>/edit_diet/', user_views.edit_diet, name='edit_diet'),
+    path('diets/<int:diet_id>/', user_views.diet_detail, name='diet_detail'),
+    path('create_recipe/', user_views.create_recipe, name='create_recipe'),
+    path('diets_main/<int:recipe_id>/edit_recipe/', user_views.edit_recipe, name='edit_recipe'),
+    path('recipe/<int:recipe_id>/', user_views.recipe_detail, name='recipe_detail'),
+
 ]
 
 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
