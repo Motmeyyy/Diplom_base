@@ -70,6 +70,7 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    diet = forms.ModelChoiceField(queryset=Diet.objects.all(), empty_label='Выберите диету')
     class Meta:
         model = Profile
         fields = ['full_name', 'polis', 'phone_number', 'heart_rate', 'diet', 'date_of_birth', 'address', 'medical_history', 'image']
@@ -114,9 +115,9 @@ class RecipeForm(forms.ModelForm):
         self.fields['ingredients'].label = 'Ингредиенты'
         self.fields['ingredients'].label_from_instance = lambda obj: obj.product_norm
 
-    def save(self, commit=True):
-        recipe = super().save(commit=False)
-        if commit:
-            recipe.save()
-        self.save_m2m()
-        return recipe
+    # def save(self, commit=True):
+    #     recipe = super().save(commit=False)
+    #     if commit:
+    #         recipe.save()
+    #     self.save_m2m()
+    #     return recipe
