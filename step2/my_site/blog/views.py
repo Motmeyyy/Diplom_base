@@ -17,8 +17,14 @@ def med_list(request):
     return render(request, 'blog/med.html', {'users': users})
 
 def home(request):
+    user = request.user
+    diet = user.profile.diet
+    if diet:
+        recipes = diet.recipes.all()
+    else:
+        recipes = []
     context = {
-        'posts': Post.objects.all()
+        'recipes': recipes
     }
     return render(request, 'blog/home.html', context)
 

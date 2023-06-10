@@ -101,8 +101,10 @@ class DietForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
-    ingredients = forms.ModelMultipleChoiceField(queryset=Product.objects.exclude(product_norm='').exclude(product_norm__isnull=True),
-                                                 widget=forms.CheckboxSelectMultiple(attrs={'size': 10}))
+    ingredients = forms.ModelMultipleChoiceField(
+        queryset=Product.objects.exclude(product_norm='').exclude(product_norm__isnull=True),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10})
+    )
     description = forms.CharField(widget=forms.Textarea)
     image = forms.ImageField(required=False)
 
@@ -112,8 +114,11 @@ class RecipeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['ingredients'].label = 'Ингредиенты'
+        self.fields['name'].label = 'Название'
+        self.fields['description'].label = 'Описание'
+        self.fields['ingredients'].label = 'Теги'
         self.fields['ingredients'].label_from_instance = lambda obj: obj.product_norm
+        self.fields['image'].label = 'Изображение'
 
     # def save(self, commit=True):
     #     recipe = super().save(commit=False)
