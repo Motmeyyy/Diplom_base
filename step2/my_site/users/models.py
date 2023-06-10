@@ -49,7 +49,7 @@ class PurchaseHistory(models.Model):
 class Diet(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    recipes = models.ManyToManyField('Recipe')
+    recipes = models.ManyToManyField('Recipe',blank=True)
 
     def __str__(self):
         return self.name

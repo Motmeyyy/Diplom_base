@@ -226,6 +226,16 @@ def create_diet(request):
         form = DietForm()
     return render(request, 'users/diet_form.html', {'form': form, 'diets': diets})
 
+def edit_diet(request, diet_id):
+    diet = get_object_or_404(Recipe, pk=diet_id)
+    if request.method == 'POST':
+        form = DietForm(request.POST, instance=diet)
+        if form.is_valid():
+            form.save()
+            return redirect('diet_detail', diet_id=diet_id)
+    else:
+        form = DietForm(instance=diet)
+    return render(request, 'users/edit_diet.html', {'form': form, 'diet': diet})
 
 @login_required
 def create_recipe(request):
@@ -238,3 +248,18 @@ def create_recipe(request):
     else:
         form = RecipeForm()
     return render(request, 'users/recipe_form.html', {'form': form, 'recipes': recipes})
+
+def edit_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, instance=recipe)
+        if form.is_valid():
+            form.save()
+            return redirect('recipe_detail', recipe_id=recipe_id)
+    else:
+        form = RecipeForm(instance=recipe)
+    return render(request, 'users/edit_recipe.html', {'form': form, 'recipe': recipe})
+
+def recipe_detail(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    return render(request, 'users/recipe_detail.html', {'recipe': recipe})

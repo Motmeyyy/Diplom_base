@@ -21,11 +21,14 @@ urlpatterns = [
     path('purchase-history/', user_views.purchase_history, name='purchase_history'),
     path('diets/', user_views.diet_list, name='diet_list'),
     path('recipes/', user_views.recipe_list, name='recipe_list'),
-    path('diets/<int:diet_id>/', user_views.diet_detail, name='diet_detail'),
     path('diets/<int:diet_id>/choose/', user_views.choose_diet, name='choose_diet'),
     path('diets_main/', user_views.diets_main, name='diets_main'),
     path('create_diet/', user_views.create_diet, name='create_diet'),
+    path('diets_main/<int:diet_id>/edit_diet/', user_views.edit_diet, name='edit_diet'),
+    path('diets/<int:diet_id>/', user_views.diet_detail, name='diet_detail'),
     path('create_recipe/', user_views.create_recipe, name='create_recipe'),
+    path('diets_main/<int:recipe_id>/edit_recipe/', user_views.edit_recipe, name='edit_recipe'),
+    path('recipe/<int:recipe_id>/', user_views.recipe_detail, name='recipe_detail'),
 ]
 
 
