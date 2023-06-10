@@ -9,7 +9,7 @@ class Profile(models.Model):
     polis = models.CharField(max_length=20, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     heart_rate = models.IntegerField(blank=True, null=True)
-    diet = models.CharField(max_length=255, blank=True, null=True)
+    diet = models.ForeignKey('Diet', on_delete=models.SET_NULL, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
@@ -56,20 +56,18 @@ class Diet(models.Model):
 
 
 class Recipe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     ingredients = models.ManyToManyField('Product')
-    image = models.ImageField(upload_to='recipe_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='recipe_images', null=True, blank=True)
 
     def __str__(self):
         return self.name
 
-    def __str__(self):
-        return self.name
+
 
 class Product(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,default='ivank')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     product_norm = models.CharField(max_length=255, blank=True, null=True)
     brand_norm = models.CharField(max_length=255, blank=True, null=True)

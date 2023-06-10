@@ -149,7 +149,7 @@ def extract_purchase_history(user):
                                         user = user_order
                                     )
                                     if created:
-                                        product.user = user
+                                        # product.user = user
                                         product.save()
                                         print("Product User:", product.user)
                                         created_products.append(product)
@@ -192,12 +192,12 @@ def diets_main(request):
 
 @login_required
 def choose_diet(request, diet_id):
-    user = request.user
-    extract_purchase_history(user)
+    # user = request.user
+    # extract_purchase_history(user)
     diet = get_object_or_404(Diet, id=diet_id)
-    recipes = diet.recipes.filter(user=request.user)
-    products = Product.objects.filter(user=request.user)
-    return render(request, 'users/choose_diet.html', {'diet': diet, 'recipes': recipes, 'products': products})
+    # recipes = diet.recipes.filter(user=request.user)
+    # products = Product.objects.filter(user=request.user)
+    return render(request, 'users/choose_diet.html', {'diet': diet})
 
 
 def diet_list(request):

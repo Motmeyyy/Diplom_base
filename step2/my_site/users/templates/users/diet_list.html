@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h2>Diet List</h2>
+  <ul>
+    {% for diet in diets %}
+      <li>{{ diet.name }}</li>
+    {% empty %}
+      <li>No diets available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
