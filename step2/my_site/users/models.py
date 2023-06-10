@@ -56,16 +56,20 @@ class Diet(models.Model):
 
 
 class Recipe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # Добавлено поле для связи с пользователем
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
-    ingredients = models.ManyToManyField('PurchaseHistory')
-    # Другие поля, связанные с рецептом
+    description = models.TextField(blank=True, null=True)
+    ingredients = models.ManyToManyField('Product')
+    image = models.ImageField(upload_to='recipe_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     def __str__(self):
         return self.name
 
 class Product(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,default='ivank')
     name = models.CharField(max_length=255)
     product_norm = models.CharField(max_length=255, blank=True, null=True)
     brand_norm = models.CharField(max_length=255, blank=True, null=True)
@@ -74,5 +78,4 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    class Meta:
-        managed = False
+

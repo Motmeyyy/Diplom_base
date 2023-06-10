@@ -45,7 +45,7 @@
 from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, PurchaseHistory, Diet, Recipe
+from .models import Profile, PurchaseHistory, Diet, Recipe, Product
 from .models import Appointment
 
 
@@ -100,6 +100,23 @@ class DietForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
+    ingredients = forms.ModelMultipleChoiceField(queryset=Product.objects.exclude(product_norm='').exclude(product_norm__isnull=True),
+                                                 widget=forms.CheckboxSelectMultiple(attrs={'size': 10}))
+    description = forms.CharField(widget=forms.Textarea)
+    image = forms.ImageField(required=False)
+
     class Meta:
         model = Recipe
-        fields = ['name', 'ingredients']
+        fields = ['name', 'description', 'ingredients', 'image']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['ingredients'].label = 'Ингредиенты'
+        self.fields['ingredients'].label_from_instance = lambda obj: obj.product_norm
+
+    def save(self, commit=True):
+        recipe = super().save(commit=False)
+        if commit:
+            recipe.save()
+        self.save_m2m()
+        return recipe
