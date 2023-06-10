@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import logging
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +25,19 @@ SECRET_KEY = 'django-insecure-3wd@wh8dqf8d41ibwe#@onru3p@4^b%n-9x4_4!dq&&v4rixnw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
+# Установить обязательность передачи CSRF-токена в AJAX-запросах
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SECURE = False
+ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+'https://e477-178-67-242-106.ngrok-free.app',
+]
 # Application definition
 
 INSTALLED_APPS = [
+
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
@@ -41,9 +48,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap4',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
+
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -120,10 +130,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+logging.basicConfig(level=logging.DEBUG)
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+CORS_ORIGIN_ALLOW_ALL = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

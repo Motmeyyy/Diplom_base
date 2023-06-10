@@ -1,7 +1,21 @@
+from django.http import JsonResponse
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
+
 from . import views
 from .views import verify
 from users import views as user_views
+
+from users.views import HeartRateView
+
+
+@require_GET
+@csrf_exempt
+def csrf_token(request):
+    from django.middleware.csrf import get_token
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})
 
 urlpatterns = [
     path('', views.home, name='blog-home'),
