@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <h2>Recipe List</h2>
+  <ul>
+    {% for recipe in recipes %}
+      <li>{{ recipe.name }}</li>
+    {% empty %}
+      <li>No recipe available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

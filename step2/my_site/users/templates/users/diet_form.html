@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container">
+    <h2>Create Diet</h2>
+    <form method="POST" id="dietForm">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-primary">Create Diet</button>
+    </form>
+  </div>
+{% endblock %}

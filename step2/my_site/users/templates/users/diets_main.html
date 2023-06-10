@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+  <div class="container">
+
+    <div class="row mb-3">
+      <div class="col">
+        <a href="{% url 'create_diet' %}" class="btn btn-primary">Добавить диету</a>
+        <a href="{% url 'create_recipe' %}" class="btn btn-primary">Добавить рецепт</a>
+      </div>
+    </div>
+    <ul id="dietList" class="list-group">
+      <h2>Список диет:</h2>
+        <ul>
+          {% for diet in diets %}
+            <li>{{ diet.name }}</li>
+          {% empty %}
+            <li>Список пуст, добавьте новые диеты.</li>
+          {% endfor %}
+        </ul>
+      <h2>Список Рецептов:</h2>
+        <ul>
+          {% for recipe in recipes %}
+            <li>{{ recipe.name }}</li>
+          {% empty %}
+            <li>Список пуст, добавьте новые Рецепты.</li>
+          {% endfor %}
+        </ul>
+    </ul>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // Перенаправление на страницу создания диеты при нажатии на кнопку "Add Diet"
+  document.getElementById("addDietBtn").addEventListener("click", function(event) {
+    event.preventDefault();
+    window.location.href = "{% url 'create_diet' %}";
+  });
+
+  // Перенаправление на страницу создания рецепта при нажатии на кнопку "Add Recipe"
+  document.getElementById("addRecipeBtn").addEventListener("click", function(event) {
+    event.preventDefault();
+    window.location.href = "{% url 'create_recipe' %}";
+  });
+</script>
+{% endblock %}
