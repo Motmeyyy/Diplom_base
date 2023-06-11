@@ -29,5 +29,6 @@ urlpatterns = [
 
     path('my_appointments/', user_views.view_appointments, name='view_appointments'),
     path('make_appointment/', user_views.create_appointment, name='create_appointment'),
+    path('med/search/', views.search_users, name='search-users'),
 
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

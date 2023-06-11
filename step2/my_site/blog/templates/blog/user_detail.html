@@ -2,7 +2,13 @@
 
 {% block content %}
   <h1>Информация о пользователе</h1>
-  <p>Имя пользователя: {{ user.username }},{{ user.profile.full_name }}</p>
-  
-  <!-- Добавьте дополнительную информацию о пользователе по мере необходимости -->
+  <div class="alert alert-primary" role="alert">
+    <img src="{{ user.profile.image.url }}" alt="Profile Picture" width="200">
+    <h5>{{ user.profile.full_name }}</h5>
+    <p>Дата рождения: {{ user.profile.date_of_birth }}</p>
+    <p>Полис: {{ user.profile.polis }}</p>
+    <p>Номер телефона: {{ user.profile.phone_number }}</p>
+    <p>Адрес: {{ user.profile.address }}</p>
+    <p>Медицинская история: {{ user.profile.medical_history }}</p>
+  </div>
 {% endblock %}

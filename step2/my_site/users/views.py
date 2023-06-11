@@ -473,3 +473,16 @@ def recipe_detail(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     return render(request, 'users/recipe_detail.html', {'recipe': recipe})
 
+
+
+
+@login_required
+def delete_appointment(request, appointment_id):
+    appointment = Appointment.objects.get(id=appointment_id)
+
+    # Проверяем, что пользователь, выполняющий запрос, является создателем записи
+    if appointment.patient == request.user:
+        appointment.delete()
+        return HttpResponse("Запись успешно удалена", status=200)
+
+    return HttpResponse("У вас нет разрешения на удаление этой записи", status=403)

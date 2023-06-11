@@ -88,3 +88,12 @@ def verify(request):
         form = VerificationForm()
 
     return render(request, 'blog/verify.html', {'form': form})
+
+def search_users(request):
+    query = request.GET.get('query')
+    users = User.objects.filter(profile__full_name__icontains=query) if query else []
+
+    context = {
+        'users': users
+    }
+    return render(request, 'blog/med.html', context)
