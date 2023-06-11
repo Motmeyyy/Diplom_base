@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import Post
@@ -7,6 +8,7 @@ from users.models import VerificationRequest
 from users.forms import VerificationForm
 from users import templates
 from users.models import Profile
+
 def user_detail(request, user_id):
     user = get_object_or_404(User, id=user_id)
     profile = get_object_or_404(Profile, user=user)  # Получаем профиль пользователя
@@ -16,6 +18,7 @@ def med_list(request):
     users = User.objects.all()
     return render(request, 'blog/med.html', {'users': users})
 
+@login_required
 def home(request):
     user = request.user
     diet = user.profile.diet

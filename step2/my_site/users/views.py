@@ -1,18 +1,14 @@
 
 from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
-
 import hashlib
 import re
-
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
-
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -32,13 +28,10 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 from .models import Appointment, Profile
 from django.shortcuts import render
 from django.http import JsonResponse
-
 from .forms import AppointmentForm
 from django.shortcuts import render, get_object_or_404
-
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, AppointmentForm, DietForm, RecipeForm
 from .models import Appointment, PurchaseHistory, Diet, Recipe, Product
-
 import imaplib
 import email
 from django.views.decorators.csrf import csrf_exempt
@@ -437,13 +430,13 @@ def create_diet(request):
         form = DietForm(request.POST)
         if form.is_valid():
             diet = form.save()
-            return redirect('diet_list')
+            return redirect('diets_main')
     else:
         form = DietForm()
     return render(request, 'users/diet_form.html', {'form': form, 'diets': diets})
 
 def edit_diet(request, diet_id):
-    diet = get_object_or_404(Recipe, pk=diet_id)
+    diet = get_object_or_404(Diet, pk=diet_id)
     if request.method == 'POST':
         form = DietForm(request.POST, instance=diet)
         if form.is_valid():
@@ -460,7 +453,7 @@ def create_recipe(request):
         form = RecipeForm(request.POST)
         if form.is_valid():
             recipe = form.save()
-            return redirect('recipe_list')
+            return redirect('diets_main')
     else:
         form = RecipeForm()
     return render(request, 'users/recipe_form.html', {'form': form, 'recipes': recipes})

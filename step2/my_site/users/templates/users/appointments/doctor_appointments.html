@@ -3,12 +3,28 @@
 {% block content %}
   <h1>Записи (мед.персонал)</h1>
   {% if appointments %}
-    <ul>
-      {% for appointment in appointments %}
-        <li>{{ appointment.doctor.profile.full_name }} - {{ appointment.date }} - {{ appointment.description }}</li>
-      {% endfor %}
-    </ul>
+     <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">ФИО</th>
+              <th scope="col">Дата Записи</th>
+              <th scope="col">Описание</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.doctor.profile.full_name }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.description }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
   {% else %}
     <p>К вам пока никто не записался.</p>
   {% endif %}
 {% endblock %}
+

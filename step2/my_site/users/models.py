@@ -12,7 +12,7 @@ class Profile(models.Model):
     full_name = models.CharField(max_length=255, default='FIO')
     polis = models.CharField(max_length=20, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    heart_rate = models.IntegerField(null=True)
+    heart_rate = models.IntegerField(null=True,blank=True)
     diet = models.ForeignKey('Diet', on_delete=models.SET_NULL, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -22,6 +22,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
+
+    def __str__(self):
+        if self.diet:
+            return str(self.diet)
+        else:
+            return "Диета не выбрана"
 
 
 class VerificationRequest(models.Model):
