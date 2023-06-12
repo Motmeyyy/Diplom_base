@@ -27,10 +27,16 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    diet = forms.ModelChoiceField(queryset=Diet.objects.all(), empty_label='Выберите диету')
+    # diet = forms.ModelChoiceField(queryset=Diet.objects.all(), empty_label='Выберите диету')
+    date_of_birth = forms.DateField(widget=forms.DateInput(format='%d.%m.%Y'), input_formats=('%d.%m.%Y',))
+
     class Meta:
         model = Profile
-        fields = ['full_name', 'polis', 'phone_number', 'heart_rate', 'diet', 'date_of_birth', 'address', 'medical_history', 'image']
+        fields = ['full_name', 'polis', 'phone_number', 'heart_rate', 'date_of_birth', 'address', 'medical_history','image']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'].input_formats = ['%d.%m.%Y', '%d %B %Y']
 
 
 class AppointmentForm(forms.ModelForm):
