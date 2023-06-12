@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.forms import DateInput
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
@@ -13,11 +13,11 @@ class Profile(models.Model):
     polis = models.CharField(max_length=20, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     heart_rate = models.IntegerField(null=True,blank=True)
-    diet = models.ForeignKey('Diet', on_delete=models.SET_NULL, blank=True, null=True)
+    diet = models.CharField(max_length=20, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
-    email_key = models.CharField(max_length=255, default='Nz2cNLSLUb3UhKf6eQvb')
+    email_key = models.CharField(max_length=255, default='FfmqnZ69WW8Cwp7ejRca')
     email_sender = models.CharField(max_length=255, default='ivankov2001@gmail.com')
 
     def __str__(self):
