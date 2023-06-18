@@ -1,5 +1,3 @@
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import Post
@@ -9,10 +7,6 @@ from users.models import VerificationRequest
 from users.forms import VerificationForm
 from users import templates
 from users.models import Profile
-import random
-from users.models import Product, Recipe
-
-
 def user_detail(request, user_id):
     user = get_object_or_404(User, id=user_id)
     profile = get_object_or_404(Profile, user=user)  # Получаем профиль пользователя
@@ -22,31 +16,15 @@ def med_list(request):
     users = User.objects.all()
     return render(request, 'blog/med.html', {'users': users})
 
-
-import random
-
-
-@login_required
 def home(request):
     user = request.user
-    purchased_products = Product.objects.filter(user=user)
-    if purchased_products:
-        recipes = Recipe.objects.filter(ingredients__in=purchased_products).annotate(
-            num_products=Count('ingredients')).order_by('-num_products')
+    diet = user.profile.diet
+    if diet:
+        recipes = diet.recipes.all()
     else:
-        diet = user.profile.diet
-        if diet:
-            recipes = diet.recipes.all()
-        else:
-            recipes = []
-
-    if recipes:
-        recipe = random.choice(recipes)
-    else:
-        recipe = None
-
+        recipes = []
     context = {
-        'recipe': recipe
+        'recipes': recipes
     }
     return render(request, 'blog/home.html', context)
 
