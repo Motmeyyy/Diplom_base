@@ -18,7 +18,8 @@ class Profile(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     medical_history = models.TextField(blank=True, null=True)
     email_key = models.CharField(max_length=255, default='Nz2cNLSLUb3UhKf6eQvb')
-    email_sender = models.CharField(max_length=255, default='ivankov2001@gmail.com')
+    email_sender = models.CharField(max_length=255, default='sender')
+    is_in_system = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Profile'

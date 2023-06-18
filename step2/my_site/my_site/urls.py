@@ -9,6 +9,9 @@ from blog import views
 from users.views import HeartRateView
 from users.views import get_csrf_token
 urlpatterns = [
+
+    path('monitor/', user_views.monitor, name='monitor'),
+
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),

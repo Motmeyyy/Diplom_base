@@ -57,7 +57,14 @@ def about(request):
     else: return render(request, 'blog/home.html')
 
 def my_health(request):
-    return render(request, 'blog/my_health.html')
+    user = User.objects.get(username='irina')
+    profile = user.profile
+    context = {
+        'profile': profile
+    }
+    return render(request, 'blog/my_health.html', context)
+
+
 
 def my_appointments(request):
     return render(request, 'users/appointments/view.html')
@@ -67,8 +74,6 @@ def make_appointment(request):
 
 
 def verify(request):
-
-    
     if request.method == 'POST':
         form = VerificationForm(request.POST)
         if form.is_valid():
@@ -81,7 +86,7 @@ def verify(request):
                 )
                 verification_request.is_verified = True
                 verification_request.save()
-                return redirect('verification_success')
+                return redirect('profile')  # перенаправление на страницу успеха верификации
             except VerificationRequest.DoesNotExist:
                 pass
     else:

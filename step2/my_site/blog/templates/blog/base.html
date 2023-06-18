@@ -40,6 +40,7 @@
                 <a class="nav-item nav-link" href="{% url 'my-health' %}">Мое здоровье</a>
                 <a class="nav-item nav-link" href="{% url 'view_appointments' %}">Мои записи</a>
                 <a class="nav-item nav-link" href="{% url 'create_appointment' %}">Записаться на прием к врачу</a>
+                <a class="nav-item nav-link" href="{% url 'message_view_patient' %}">Чат с врачом</a>
                 {% endif %}
                 
                 {% if user|has_group:'Мед.персонал' %}
@@ -47,9 +48,13 @@
                 <a class="nav-item nav-link" href="{% url 'doctor_appointments' %}">Записи ко мне</a>
                 <a class="nav-item nav-link" href="{% url 'med-list' %}">База пациентов</a>
                 <a class="nav-item nav-link" href="{% url 'diets_main' %}">Диеты</a>
+                <a class="nav-item nav-link" href="{% url 'monitor' %}">Мониторинг</a>
+                <a class="nav-item nav-link" href="{% url 'message_view_doctor' %}">Чат с пациентом</a>
                 {% endif %}
                 {% if not user.verificationrequest.is_verified %}
+
                 <a class="nav-item nav-link" href="{% url 'verify' %}">Подтвердить статус персонала</a>
+
                 {% endif %}
                 {% endif %}
               {% endif %}
@@ -80,19 +85,7 @@
           {% endif %}
           {% block content %}{% endblock %}
         </div>
-        <div class="col-md-4">
-          <div class="content-section">
-            <h3>Разделы</h3>
-            <p class='text-muted'>
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-light"><a href="{% url 'purchase_history' %}">Покупки</a></li>
-                <li class="list-group-item list-group-item-light"><a href="{% url 'message_view_doctor' %}">Мои сообщения</a></li>
-                <li class="list-group-item list-group-item-light"><a href="{% url 'message_view_patient' %}">Пациент сообщения</a></li>
-                <li class="list-group-item list-group-item-light"><a href="{% url 'heart_rate_api' %}">Пульс</a></li>
-              </ul>
-            </p>
-          </div>
-        </div>
+
       </div>
 
     </main>

@@ -1,4 +1,130 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    <h1>Мое Здоровье</h1>
+    <h1>Мое здоровье</h1>
+    <div class="form-group">
+        <label for="heart-rate">ЧСС:</label>
+        <input type="text" class="form-control" id="heart-rate" value="{{ user.profile.heart_rate }}" readonly>
+    </div>
+    <div class="chart-container" style="height: 400px;">
+        <canvas id="heartRateChart"></canvas>
+    </div>
+  <div class="doctor-recommendations">
+        <h2>Рекомендации врача</h2>
+        <div class="form-group">
+            <label for="diagnosis">Диагноз:</label>
+            <textarea class="form-control" id="diagnosis" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="recommendations">Рекомендации:</label>
+            <textarea class="form-control" id="recommendations" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="treatment">Лечение:</label>
+            <textarea class="form-control" id="treatment" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="nutrition">Питание:</label>
+            <textarea class="form-control" id="nutrition" rows="4"></textarea>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@types/chartjs-plugin-definitelytyped@2.0.0"></script>
+    <script>
+        // Создание графика с начальными данными и настройками осей
+        const ctx = document.getElementById('heartRateChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'ЧСС',
+                    data: [],
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: 'blue',
+                    pointHoverBackgroundColor: 'blue',
+                    pointBorderWidth: 2,
+                    pointHoverBorderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 180,
+                        stepSize: 30,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value;
+                            },
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: 'black'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            color: 'black'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                        bottom: 20
+                    }
+                },
+                theme: 'definitelytyped'
+            }
+        });
+
+        // Функция для обновления значения пульса на странице и в графике
+        function updateHeartRate() {
+            fetch("{% url 'heart_rate_api' %}")
+                .then(response => response.json())
+                .then(data => {
+                    // Обновление значения пульса на странице
+                    document.getElementById("heart-rate").value = data.heart_rate;
+
+                    // Генерация временной метки
+                    const time = new Date().toLocaleTimeString();
+
+                    // Обновление графика
+                    chart.data.labels.push(time);
+                    chart.data.datasets[0].data.push(data.heart_rate);
+
+                    if (chart.data.labels.length > 10) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                    }
+
+                    chart.update();
+                })
+                .catch(error => console.log(error));
+        }
+
+        // Вызов функции обновления значения пульса и графика каждые 4 секунды
+        setInterval(updateHeartRate, 4000);
+    </script>
 {% endblock content %}

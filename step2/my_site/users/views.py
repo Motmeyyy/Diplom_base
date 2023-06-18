@@ -342,7 +342,7 @@ class HeartRateView(View):
 
     @csrf_exempt
     def get(self, request, *args, **kwargs):
-        user = get_object_or_404(User, username='matveyss')
+        user = get_object_or_404(User, username='irina')
         profile = Profile.objects.get(user=user)
         heart_rate = profile.heart_rate
         return JsonResponse({'heart_rate': heart_rate})
@@ -353,7 +353,7 @@ class HeartRateView(View):
             data = json.loads(request.body)
             heart_rate = int(data.get('heart_rate'))
 
-            user = get_object_or_404(User, username='matveyss')
+            user = get_object_or_404(User, username='irina')
             profile = get_object_or_404(Profile, user=user)
             profile.heart_rate = heart_rate
             profile.save()
@@ -365,7 +365,7 @@ class HeartRateView(View):
             return JsonResponse(response_data)
 
     def get_heart_rate(self, request):
-        user = get_object_or_404(User, username='matveyss')
+        user = get_object_or_404(User, username='irina')
         profile = get_object_or_404(Profile, user=user)
         return JsonResponse({'heart_rate': profile.heart_rate})
 
@@ -473,3 +473,7 @@ def recipe_detail(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     return render(request, 'users/recipe_detail.html', {'recipe': recipe})
 
+def monitor(request):
+    profiles = Profile.objects.filter(is_in_system=True)
+    context = {'profiles': profiles}
+    return render(request, 'users/monitor.html', context)
